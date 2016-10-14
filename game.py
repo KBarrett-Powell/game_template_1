@@ -42,10 +42,8 @@ def remove_spaces(text):
     >>> remove_spaces("   ")
     ''
     """
-    # New variable takes result of stripping whitespace from string
-    nospace = text.strip()
 
-    return nospace
+    return text.strip()
 
 
 def normalise_input(user_input):
@@ -90,8 +88,8 @@ def display_room(room):
 
     Note: <BLANKLINE> here means that doctest should expect a blank line.
     """
-    print('\n' + format(room["name"].upper()))
-    print('\n' + format(room["description"]) + '\n')
+    print('\n' + str(room["name"].upper()))
+    print('\n' + str(room["description"]) + '\n')
 
 
 def exit_leads_to(exits, direction):
@@ -106,13 +104,9 @@ def exit_leads_to(exits, direction):
     >>> exit_leads_to(rooms["Tutor"]["exits"], "west")
     'Reception'
     """
-    # New variable holds the ID of the room moved to
-    place = exits[str(direction)]
-    # Use place to find name of the room moved to
-    leads_to = rooms[str(place)]["name"]
-
-    # REturn name of new room
-    return leads_to
+    
+    # Return name of new room
+    return rooms[exits[direction]]["name"]
 
 
 def print_menu_line(direction, leads_to):
@@ -128,7 +122,7 @@ def print_menu_line(direction, leads_to):
     >>> print_menu_line("south", "MJ and Simon's room")
     Go SOUTH to MJ and Simon's room.
     """
-    print('Go '+ format(direction.upper()) + ' to ' + format(leads_to) + '.')
+    print('Go '+ direction.upper() + ' to ' + leads_to + '.')
 
 
 def print_menu(exits):
@@ -149,8 +143,7 @@ def print_menu(exits):
     print("You can:")
     # For each key in the dictionary exits, print the information about each exit
     for key in exits:
-        leads_to = exits[key]
-        print_menu_line(key, leads_to)
+        print_menu_line(key, exit_leads_to(exits, key))
     print("Where do you want to go?")
 
 
@@ -170,10 +163,7 @@ def is_valid_exit(exits, user_input):
     >>> is_valid_exit(rooms["Parking"]["exits"], "east")
     True
     """
-    if user_input in exits:
-        return True
-    else:
-        return False
+    return user_input in exits
 
 
 def menu(exits):
@@ -186,20 +176,20 @@ def menu(exits):
     of the chosen exit. Otherwise the menu is displayed again and the player
     prompted, repeatedly, until a correct choice is entered."""
 
-    # Repeat until the player enter a valid choice
+    # Repeat until the player enters a valid choice
     while True:
         # Display menu
         print_menu(exits)
         # Read player's input
-        move = input("> ")
+        user_input = input(">>")
         # Normalise the input
-        move_1 = normalise_input(move)
-        # Check if the input makes sense (is valid exit)
-            # If so, return the player's choice
-        check = is_valid_exit(move_1)
+        user_input = normalise_input(user_input)
 
-        if check == True:
-            False
+        if "go " in user_input:
+            user_input = user_input.replace("go ", "")
+
+        if is_valid_exit(exits, user_input):
+            return user_input
 
 
 def move(exits, direction):
@@ -214,12 +204,7 @@ def move(exits, direction):
     >>> move(rooms["Reception"]["exits"], "west") == rooms["Office"]
     False
     """
-    # new_room variable holds the id of the new room
-    new_room = exits[str(direction)]
-    # current_room now holds the name of the dictionary of the room moved to
-    current_room = rooms[new_room]
-
-    return current_room
+    return rooms[exits[direction]]
 
 
 # This is the entry point of our program
