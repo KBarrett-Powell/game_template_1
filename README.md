@@ -1,3 +1,3 @@
 # game_template_1
 
-this is the first branch
+this is a merged branch
